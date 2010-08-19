@@ -99,7 +99,7 @@ class Ragweed::Debuggertux
     Dir.glob("/proc/*/cmdline").each do |x|
       f = File.read(x)
       p = x.split("/")[3]
-      return x if p.to_i != Process.pid.to_i and f =~ rx
+      return p if p.to_i != Process.pid.to_i and f =~ rx
     end
     return nil
   end
