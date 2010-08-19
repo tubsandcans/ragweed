@@ -29,7 +29,7 @@ class Ragweed::Debuggertux
     ## callable: lambda to be called when breakpoint is hit
     ## name: name of breakpoint
     def initialize(bp, ip, callable, p, name = "")
-	  @bppid = p
+      @bppid = p
       @@bpid ||= 0
       @bp = bp
       @function = name
@@ -95,20 +95,13 @@ class Ragweed::Debuggertux
     @opts.each {|k, v| try(k) if v}
   end
 
-  ## This is crude!
   def self.find_by_regex(rx)
-    a = Dir.entries("/proc/")
-    a.delete_if do |x| x == '.'; end
-    a.delete_if do |x| x == '..'; end
-    a.delete_if do |x| x =~ /[a-z]/; end
-    
-    a.each do |x|
+    Dir.glob("/proc/*/cmdline").each do |x|
       f = File.read("/proc/#{x}/cmdline")
-      if f =~ rx and x.to_i != Process.pid.to_i
-        return x
-      end
+      p = x.split("/")[3]
+      return x if p.to_i != Process.pid.to_i and f =~ rx
     end
-	return nil
+    return nil
   end
 
   def install_bps
@@ -289,8 +282,8 @@ class Ragweed::Debuggertux
         self.on_sigstop
         Ragweed::Wraptux::kill(@pid, Ragweed::Wraptux::Signal::SIGCONT)
         self.continue
-	  when signal == Ragweed::Wraptux::Signal::SIGWINCH
-		self.continue
+      when signal == Ragweed::Wraptux::Signal::SIGWINCH
+        self.continue
       else
         raise "Add more signal handlers (##{signal})"
       end
@@ -299,15 +292,14 @@ class Ragweed::Debuggertux
 
   ## Return an array of thread PIDs
   def self.threads(pid)
-	begin
-	    a = Dir.entries("/proc/#{pid}/task/")
-	rescue
-		puts "No such process (#{pid})"
-		return
-	end
-    a.delete_if { |x| x == '.' }
-    a.delete_if { |x| x == '..' }
+      a = Dir.glob("/proc/#{pid}/task/*").map{|x| File.basename(x).to_i}
+      warn "no such pid" if a.empty?
+      a
   end
+  
+  def threads
+    Dir.glob("/proc/#{@pid}/task/*").map{|x| File.basename(x).to_i}
+  end    
 
   def self.procparse(p)
       shared_objects = Hash.new
