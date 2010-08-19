@@ -97,7 +97,7 @@ class Ragweed::Debuggertux
 
   def self.find_by_regex(rx)
     Dir.glob("/proc/*/cmdline").each do |x|
-      f = File.read("/proc/#{x}/cmdline")
+      f = File.read(x)
       p = x.split("/")[3]
       return x if p.to_i != Process.pid.to_i and f =~ rx
     end
