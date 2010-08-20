@@ -15,13 +15,29 @@ module Ragweed::Wraptux::Ptrace
     STEP = 9
     GETREGS = 12
     SETREGS = 13
+    GETFPREGS = 14
+    SETFPREGS = 15
     ATTACH = 16
     DETACH = 17
+    GETFPXREGS = 18
+    SETFPXREGS = 19
     SYSCALL = 24
     SETOPTIONS = 0x4200
     GETEVENTMSG = 0x4201
     GETSIGINFO = 0x4202
     SETSIGINFO = 0x4203
+
+    # Alternate names defined for above constants
+    TRACEME = TRACE_ME
+    PEEKTEXT = READ_I = PEEK_TEXT
+    PEEKDATA = READ_D = PEEK_DATA
+    PEEKUSER = READ_U = PEEK_USER
+    POKETEXT = WRITE_I = POKE_TEXT
+    POKEDATA = WRITE_D = POKE_DATA
+    POKEUSER = WRITE_U = POKE_USER
+    CONT = CONTINUE
+    SINGLESTEP = SINGLE_STEP = STEP
+    
 end
 
 module Ragweed::Wraptux::Ptrace::SetOptions
@@ -44,6 +60,7 @@ module Ragweed::Wraptux::Ptrace::EventCodes
     EXIT = 6
 end
 
+# Use normal Ruby Signal module instead. This may be depricated in the future
 module Ragweed::Wraptux::Signal
 	SIGHUP = 1
 	SIGINT = 2
